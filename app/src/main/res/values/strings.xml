@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">XClone_tutorial</string>
+    <!-- HomeScreen -->
+    <string name="home_title">Home</string>
+    <string name="drawer_home">Home</string>
+    <string name="drawer_profile">Profile</string>
+    <string name="drawer_settings">Settings</string>
+    <string name="drawer_logout">Logout</string>
+    <string name="cd_menu">Menu</string>
+
+    <!-- TweetCard -->
+    <string name="tweet_author_name">John Doe</string>
+    <string name="tweet_handle_time">@johndoe · 2h</string>
+    <string name="tweet_body_sample">This is a sample tweet text to simulate a social post in our Compose UI.</string>
+    <string name="cd_comment">Comment</string>
+    <string name="cd_repost">Repost</string>
+    <string name="cd_like">Like</string>
+    <string name="cd_share">Share</string>
+    
+    <!-- Firebase/Loading -->
+    <string name="loading">Loading</string>
+    <string name="error_loading_post">Failed to load post</string>
+    
+    <!-- Firestore seeding -->
+    <string name="seed_button">Seed posts</string>
+    <string name="seed_in_progress">Seeding…</string>
+    <string name="seed_success">Seeded %1$d posts</string>
+    <string name="seed_error">Failed to seed posts</string>
+</resources>
