@@ -150,7 +150,7 @@ fun HomeScreen(
                         }
 
                         LazyColumn {
-                            items(displayedPosts) { postWithLikeState ->
+                            this.items(displayedPosts) { postWithLikeState ->
                                 TweetCard(
                                     postWithLikeState = postWithLikeState,
                                     onLike = { postId, currentLikeCount ->
