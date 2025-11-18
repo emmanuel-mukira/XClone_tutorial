@@ -1,96 +1,257 @@
-# Explainer — Phase 1 Compose Code
+# Explainer — Phase 1 Compose Code (Exam Study Guide)
 
-This document explains the logic and syntax of the key files so you can understand and reproduce them during exams.
+This document explains the logic and syntax of the key files so you can **understand and reproduce them during exams**. Each section breaks down the code line-by-line with syntax explanations and exam tips.
 
-- Files covered:
-  - `app/src/main/java/com/example/xclone_tutorial/MainActivity.kt`
-  - `app/src/main/java/com/example/xclone_tutorial/ui/home/HomeScreen.kt`
-  - `app/src/main/java/com/example/xclone_tutorial/ui/components/TweetCard.kt`
+## Files Covered
+- `MainActivity.kt` - Entry point and theme setup
+- `ui/home/HomeScreen.kt` - Main screen with drawer and top bar
+- `ui/components/TweetCard.kt` - Reusable post card component
 
 ---
 
 ## MainActivity.kt — Entry point wiring Compose UI
 
-Purpose: Hosts the app’s UI. In Android, an `Activity` is a screen container. We use Compose to set the content.
+### Purpose
+Hosts the app's UI. In Android, an `Activity` is a screen container. We use Compose to set the content.
 
-Key points:
-- `ComponentActivity`: Base class for activities using Compose.
-- `setContent { ... }`: Defines the Composable UI tree for the activity.
-- `XClone_tutorialTheme { ... }`: Applies Material 3 colors/typography/shapes.
-- `Scaffold(...) { innerPadding -> ... }`: High-level layout slot that gives standard areas (top bar, content). We use it just to provide safe padding.
-- `HomeScreen()`: Our top-level Composable for this screen.
-
-Why Scaffold here? It ensures proper insets and a consistent layout structure. `innerPadding` prevents UI from overlapping system bars.
-
-Snippet:
+### Full Code
 ```kotlin
-setContent {
-  XClone_tutorialTheme {
-    Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-      Column(modifier = Modifier.padding(innerPadding)) {
-        HomeScreen()
-      }
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
+        setContent {
+            XClone_tutorialTheme {
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                    Column(modifier = Modifier.padding(innerPadding)) {
+                        HomeScreen()
+                    }
+                }
+            }
+        }
     }
-  }
 }
 ```
 
-Exam tips:
-- Remember `setContent` is where you switch from imperative Android views to declarative Compose UI.
-- Theme wraps everything so Material defaults (colors, typography) are available.
+### Line-by-Line Breakdown
+
+**1. Activity class:**
+```kotlin
+class MainActivity : ComponentActivity()
+```
+- `ComponentActivity`: Base class for activities using Compose
+- `:` means "extends" or "inherits from"
+- Required for Compose apps
+
+**2. onCreate lifecycle:**
+```kotlin
+override fun onCreate(savedInstanceState: Bundle?)
+```
+- `override`: Replacing parent class method
+- `onCreate`: Called when activity is created
+- `savedInstanceState`: Saved state from previous session (nullable)
+
+**3. Edge-to-edge display:**
+```kotlin
+enableEdgeToEdge()
+```
+- Draws content under system bars (status bar, navigation bar)
+- Modern Android UI pattern
+
+**4. Set Compose content:**
+```kotlin
+setContent { ... }
+```
+- `setContent`: Defines the Composable UI tree
+- Everything inside `{ }` is Compose code
+- This is where you switch from XML to Compose
+
+**5. Apply theme:**
+```kotlin
+XClone_tutorialTheme { ... }
+```
+- Wraps UI with Material 3 theme
+- Provides colors, typography, shapes to all children
+- Auto-generated when you create Compose project
+
+**6. Scaffold layout:**
+```kotlin
+Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+```
+- `Scaffold`: High-level layout with slots (topBar, bottomBar, content)
+- `modifier = Modifier.fillMaxSize()`: Take all available space
+- `{ innerPadding -> }`: Lambda receiving padding values
+- `innerPadding`: Safe area padding (avoids system bars)
+
+**7. Column with padding:**
+```kotlin
+Column(modifier = Modifier.padding(innerPadding)) {
+    HomeScreen()
+}
+```
+- `Column`: Vertical layout container
+- `.padding(innerPadding)`: Apply safe area padding
+- `HomeScreen()`: Our main screen composable
+
+### Key Concepts for Exams
+
+**Syntax patterns:**
+- `class X : Y()` - Inheritance
+- `override fun` - Method overriding
+- `setContent { }` - Lambda for Compose UI
+- `Modifier.method1().method2()` - Chaining modifiers
+
+**Why Scaffold?**
+- Provides consistent layout structure
+- Handles system insets automatically
+- `innerPadding` prevents UI from overlapping system bars
+
+**Exam tip:** Always wrap Compose UI in a theme composable for Material styling
 
 ---
 
 ## HomeScreen.kt — Scaffold + TopAppBar + Navigation Drawer + Content
 
-Purpose: Defines the main UI structure with a top app bar, a left navigation drawer, and a content area containing one `TweetCard`.
+### Purpose
+Defines the main UI structure with a top app bar, a left navigation drawer, and a content area containing one `TweetCard`.
 
-Important APIs:
-- `ModalNavigationDrawer`: A Material 3 drawer that slides over content.
-- `rememberDrawerState(...)`: Compose state holder for the drawer (Open/Closed).
-- `rememberCoroutineScope()`: Needed because `drawerState.open()` is a suspend function, so we call it inside a coroutine.
-- `Scaffold`: Provides `topBar` slot and content area.
-- `TopAppBar`: Material 3 top bar with a title and a navigation icon (hamburger menu).
-- `NavigationDrawerItem`: Simple drawer item rows.
+### Important Material3 Components
 
-Flow:
-1. Create drawer state and coroutine scope.
-2. Build `ModalNavigationDrawer` with `drawerContent` (items: Home, Profile, Settings, Logout).
-3. Inside it, a `Scaffold` shows the `TopAppBar`. The menu `IconButton` opens the drawer.
-4. Content area adds padding and places `TweetCard()`.
+**ModalNavigationDrawer:**
+- A Material 3 drawer that slides over content from the left
+- Can be opened by swiping or tapping a button
 
-Key snippet:
+**rememberDrawerState:**
+- Compose state holder for drawer (Open/Closed)
+- Remembers state across recompositions
+
+**rememberCoroutineScope:**
+- Provides a coroutine scope for suspend functions
+- Needed because `drawerState.open()` is a suspend function
+
+**Scaffold:**
+- Provides `topBar` slot and content area
+- Handles layout and padding automatically
+
+**TopAppBar:**
+- Material 3 top bar with title and navigation icon
+- Shows hamburger menu icon
+
+**NavigationDrawerItem:**
+- Individual item rows in the drawer
+- Has label, selected state, and onClick
+
+### Code Structure Flow
+
+1. Create drawer state and coroutine scope
+2. Build `ModalNavigationDrawer` with drawer items
+3. Inside drawer, place `Scaffold` with `TopAppBar`
+4. Menu icon button opens the drawer
+5. Content area shows `TweetCard()`
+
+### Key Code Sections
+
+**1. State management:**
 ```kotlin
 val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 val scope = rememberCoroutineScope()
+```
+- `rememberDrawerState`: Creates and remembers drawer state
+- `DrawerValue.Closed`: Initial state (drawer hidden)
+- `rememberCoroutineScope`: Scope for launching coroutines
+- Both survive recompositions
 
+**2. Drawer structure:**
+```kotlin
 ModalNavigationDrawer(
-  drawerState = drawerState,
-  drawerContent = { /* NavigationDrawerItem(...) */ }
-) {
-  Scaffold(
-    topBar = {
-      TopAppBar(
-        title = { Text("Home") },
-        navigationIcon = {
-          IconButton(onClick = { scope.launch { drawerState.open() } }) {
-            Icon(Icons.Filled.Menu, contentDescription = "Menu")
-          }
+    drawerState = drawerState,
+    drawerContent = {
+        ModalDrawerSheet {
+            Column(modifier = Modifier.padding(8.dp)) {
+                NavigationDrawerItem(
+                    label = { Text(stringResource(R.string.drawer_home)) },
+                    selected = true,
+                    onClick = { }
+                )
+                // More items...
+            }
         }
-      )
     }
-  ) { innerPadding ->
-    Column(Modifier.padding(innerPadding).padding(16.dp)) {
-      TweetCard()
-    }
-  }
+) {
+    // Main content here
 }
 ```
+- `drawerState`: Controls open/close state
+- `drawerContent`: Lambda defining drawer UI
+- `ModalDrawerSheet`: Material surface for drawer
+- `NavigationDrawerItem`: Each menu item
+- `selected = true`: Highlights current item
+- `stringResource`: Gets text from strings.xml
 
-Concepts to remember:
-- `remember*` stores state across recompositions.
-- Suspend functions (like `drawerState.open()`) require `launch` inside a coroutine scope.
-- `@Preview` lets you render Composables in the IDE without running the app.
+**3. Top app bar with menu:**
+```kotlin
+Scaffold(
+    topBar = {
+        TopAppBar(
+            title = { Text(stringResource(R.string.home_title)) },
+            navigationIcon = {
+                IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                    Icon(Icons.Filled.Menu, contentDescription = stringResource(R.string.cd_menu))
+                }
+            }
+        )
+    }
+)
+```
+- `topBar`: Scaffold slot for top bar
+- `title`: Composable for title text
+- `navigationIcon`: Composable for left icon
+- `IconButton`: Clickable icon wrapper
+- `scope.launch { }`: Launches coroutine
+- `drawerState.open()`: Suspend function to open drawer
+
+**4. Content area:**
+```kotlin
+{ innerPadding ->
+    Column(modifier = Modifier
+        .padding(innerPadding)
+        .padding(16.dp)) {
+        TweetCard()
+    }
+}
+```
+- `innerPadding`: Safe area from Scaffold
+- `.padding(innerPadding)`: Apply system padding
+- `.padding(16.dp)`: Add extra spacing
+- `TweetCard()`: Our post component
+
+### Key Concepts for Exams
+
+**Remember functions:**
+- `remember { }`: Preserves value across recompositions
+- `rememberDrawerState()`: Specific for drawer state
+- `rememberCoroutineScope()`: Provides coroutine scope
+
+**Suspend functions:**
+- Functions that can pause and resume
+- Must be called from coroutine: `scope.launch { }`
+- Example: `drawerState.open()`, `drawerState.close()`
+
+**Coroutines in Compose:**
+```kotlin
+val scope = rememberCoroutineScope()
+IconButton(onClick = { scope.launch { drawerState.open() } })
+```
+
+**String resources:**
+```kotlin
+Text(stringResource(R.string.home_title))
+```
+- Always use `stringResource()` for UI text
+- Supports localization
+- Follows best practices
+
+**Exam tip:** Remember the pattern: state → UI → actions update state
 
 ---
 
@@ -133,25 +294,56 @@ What is a Scaffold?
 
 ## TweetCard.kt — A single post card
 
-Purpose: A self-contained Composable that visually resembles a tweet/post with an avatar, header text, content, and action icons.
+### Purpose
+A self-contained Composable that visually resembles a tweet/post with an avatar, header text, content, and action icons.
 
-Important APIs:
-- `Card`: Material surface to group content with elevation and styling.
-- `Row` / `Column`: Compose layout primitives for horizontal/vertical placement.
-- `Box` + `CircleShape` + `clip` + `background`: Create a circular avatar placeholder.
-- `Icons.Default.*`: Built-in Material icons for quick prototyping.
-- `IconButton`: Clickable icon components.
-- `MaterialTheme.typography`: Standard text styles.
+### Important Compose Components
 
-Layout structure:
+**Card:**
+- Material surface to group content
+- Provides elevation and styling
+- Container for the entire tweet
+
+**Row / Column:**
+- `Row`: Horizontal layout (like LinearLayout horizontal)
+- `Column`: Vertical layout (like LinearLayout vertical)
+- Basic building blocks of Compose layouts
+
+**Box:**
+- Stack layout (like FrameLayout)
+- Used here for circular avatar
+
+**Modifiers:**
+- `.size(48.dp)`: Set width and height
+- `.clip(CircleShape)`: Clip to circle
+- `.background(Color.Gray)`: Fill with color
+
+**Icons:**
+- `Icons.AutoMirrored.Filled.Chat`: Comment icon (RTL-aware)
+- `Icons.Filled.Repeat`: Repost icon
+- `Icons.Filled.FavoriteBorder`: Like icon
+- `Icons.Filled.Share`: Share icon
+
+**MaterialTheme:**
+- `.typography`: Standard text styles
+- `.colorScheme`: Theme colors
+- Provides consistent design
+
+### Layout Structure
 ```
-Card
- └─ Row (padding)
-     ├─ Box (48.dp, circular gray)  // avatar
-     └─ Column (start padding)
-         ├─ Row: "John Doe" + "@johndoe · 2h"
-         ├─ Text: the tweet body
-         └─ Row: [comment] [retweet] [like] [share]
+Card (full width)
+ └─ Row (12.dp padding)
+     ├─ Box (48.dp circle, gray)     ← Avatar
+     └─ Column (12.dp start padding)
+         ├─ Row (header)
+         │   ├─ Text: "John Doe" (bold)
+         │   └─ Text: "@johndoe · 2h" (muted)
+         ├─ Text: Tweet body (multi-line)
+         └─ Row (actions, space between)
+             ├─ IconButton: Chat
+             ├─ IconButton: Repeat  
+             ├─ IconButton: FavoriteBorder
+             └─ IconButton: Share
 ```
 
 Snippet:
@@ -176,10 +368,42 @@ Card(modifier = Modifier.fillMaxWidth()) {
 }
 ```
 
-Concepts to remember:
-- `Modifier` chains are read left-to-right; they transform layout/appearance.
-- `MaterialTheme` provides consistent design tokens (colors/typography/shapes).
-- Use `@Preview(showBackground = true)` to iterate quickly on component visuals.
+### Key Concepts for Exams
+
+**Modifier chains:**
+```kotlin
+Modifier
+    .size(48.dp)
+    .clip(CircleShape)
+    .background(Color.Gray)
+```
+- Read left-to-right
+- Each method transforms the previous result
+- Order matters!
+
+**MaterialTheme usage:**
+```kotlin
+style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold)
+color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+```
+- `.typography`: Text styles (bodyLarge, headlineMedium, etc.)
+- `.colorScheme`: Theme colors (onSurface, primary, etc.)
+- `.copy()`: Modify specific properties
+
+**Preview annotation:**
+```kotlin
+@Preview(showBackground = true)
+@Composable
+private fun TweetCardPreview() {
+    XClone_tutorialTheme { TweetCard(post = samplePost) }
+}
+```
+- `@Preview`: Renders in Android Studio
+- `showBackground = true`: Shows white background
+- `private`: Preview functions should be private
+- Always wrap in theme for accurate preview
+
+**Exam tip:** Practice drawing the layout tree structure - helps visualize nesting
 
 ---
 

@@ -1,8 +1,3 @@
----
-description: Explain code
-auto_execution_mode: 1
----
-
 # Workflow Setup Summary
 
 ## What Was Done

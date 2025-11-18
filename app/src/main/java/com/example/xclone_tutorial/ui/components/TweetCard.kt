@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Chat
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.filled.Share
@@ -32,10 +33,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.res.stringResource
 import com.example.xclone_tutorial.R
 import com.example.xclone_tutorial.model.Post
+import com.example.xclone_tutorial.model.PostWithLikeState
 import com.example.xclone_tutorial.ui.theme.XClone_tutorialTheme
 
 @Composable
-fun TweetCard(post: Post) {
+fun TweetCard(postWithLikeState: PostWithLikeState, onLike: (String, Int) -> Unit = { _, _ -> }) {
+    val post = postWithLikeState.post
     Card(
         colors = CardDefaults.cardColors(),
         modifier = Modifier.fillMaxWidth()
@@ -76,7 +79,20 @@ fun TweetCard(post: Post) {
                 ) {
                     IconButton(onClick = { }) { Icon(Icons.AutoMirrored.Filled.Chat, contentDescription = stringResource(R.string.cd_comment)) }
                     IconButton(onClick = { }) { Icon(Icons.Filled.Repeat, contentDescription = stringResource(R.string.cd_repost)) }
-                    IconButton(onClick = { }) { Icon(Icons.Filled.FavoriteBorder, contentDescription = stringResource(R.string.cd_like)) }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        IconButton(onClick = { onLike(post.id, post.likeCount) }) { 
+                            Icon(
+                                imageVector = if (postWithLikeState.isLikedByCurrentUser) Icons.Filled.Favorite else Icons.Filled.FavoriteBorder,
+                                contentDescription = stringResource(R.string.cd_like),
+                                tint = if (postWithLikeState.isLikedByCurrentUser) Color.Red else MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                        Text(
+                            text = "${post.likeCount}",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = if (postWithLikeState.isLikedByCurrentUser) Color.Red else MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                     IconButton(onClick = { }) { Icon(Icons.Filled.Share, contentDescription = stringResource(R.string.cd_share)) }
                 }
             }
@@ -89,13 +105,17 @@ fun TweetCard(post: Post) {
 private fun TweetCardPreview() {
     XClone_tutorialTheme {
         TweetCard(
-            post = Post(
-                id = "1",
-                authorName = "John Doe",
-                handle = "@johndoe · 2h",
-                text = "This is a sample tweet text to simulate a social post in our Compose UI.",
-                likeCount = 12,
-                timestamp = System.currentTimeMillis()
+            postWithLikeState = PostWithLikeState(
+                post = Post(
+                    id = "1",
+                    authorId = "preview_user",
+                    authorName = "John Doe",
+                    handle = "@johndoe · 2h",
+                    text = "This is a sample tweet text to simulate a social post in our Compose UI.",
+                    likeCount = 12,
+                    timestamp = System.currentTimeMillis()
+                ),
+                isLikedByCurrentUser = false
             )
         )
     }

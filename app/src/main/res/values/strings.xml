@@ -19,6 +19,7 @@
     
     <!-- Firebase/Loading -->
     <string name="loading">Loading</string>
+    <string name="no_posts">No posts yet. Seed some posts to get started!</string>
     <string name="error_loading_post">Failed to load post</string>
     
     <!-- Firestore seeding -->
@@ -26,4 +27,21 @@
     <string name="seed_in_progress">Seeding…</string>
     <string name="seed_success">Seeded %1$d posts</string>
     <string name="seed_error">Failed to seed posts</string>
+    
+    <!-- Authentication -->
+    <string name="sign_up">Sign Up</string>
+    <string name="login">Log In</string>
+    <string name="logout">Log Out</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="already_have_account">Already have an account? Log in</string>
+    <string name="dont_have_account">Don\'t have an account? Sign up</string>
+    <string name="auth_error">Authentication failed</string>
+    <string name="signing_up">Signing up…</string>
+    <string name="logging_in">Logging in…</string>
+    <string name="welcome">Welcome to XClone</string>
+    <string name="liked_tweets">Liked tweets</string>
+    <string name="dark_mode">Dark mode</string>
+    <string name="light_mode">Light mode</string>
 </resources>

@@ -1,0 +1,14 @@
+{
+  "rules": {
+    "posts": {
+      "$postId": {
+        ".read": true,
+        ".write": "auth != null && (!data.exists() || data.child('authorId').val() === auth.uid)",
+        ".validate": "newData.hasChildren(['id', 'authorId', 'authorName', 'handle', 'text', 'likeCount', 'timestamp'])",
+        "authorId": {
+          ".validate": "newData.val() === auth.uid"
+        }
+      }
+    }
+  }
+}
